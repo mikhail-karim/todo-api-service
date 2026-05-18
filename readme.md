@@ -34,25 +34,6 @@ todo_api/
 └── response.go
 ```
 
-## penjelasan singkat file
-
-```txt
-main.go
-menjalankan server dan mendaftarkan route api
-
-model.go
-berisi struct untuk data todo, request, dan response
-
-store.go
-berisi logic penyimpanan data todo di memory
-
-handler.go
-berisi handler untuk menerima request api
-
-response.go
-berisi helper untuk membaca json dan mengirim response json
-```
-
 ## endpoint api
 
 ```txt
