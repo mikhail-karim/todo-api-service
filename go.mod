@@ -1,3 +1,3 @@
-module todo_api
+module todo-api-service
 
 go 1.26.3
