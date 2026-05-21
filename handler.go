@@ -8,13 +8,37 @@ import (
 
 // struct app menyimpan dependency yang dibutuhkan handler
 type App struct {
-	store *TodoStore
+	store     *TodoStore
+	jwtSecret string
 }
 
 // function untuk membuat app baru
-func NewApp(store *TodoStore) *App {
+func NewApp(store *TodoStore, jwtSecret string) *App {
 	return &App{
-		store: store,
+		store:     store,
+		jwtSecret: jwtSecret,
+	}
+}
+
+// middleware untuk cek jwt sebelum masuk ke endpoint todo
+func (app *App) authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// ambil token dari header authorization
+		tokenText, err := GetTokenFromRequest(r)
+		if err != nil {
+			writeError(w, http.StatusUnauthorized, "missing or invalid token")
+			return
+		}
+
+		// validasi token pakai secret yang sama dengan auth-service
+		_, err = ValidateToken(tokenText, app.jwtSecret)
+		if err != nil {
+			writeError(w, http.StatusUnauthorized, "invalid token")
+			return
+		}
+
+		// kalau token valid, lanjut ke handler asli
+		next(w, r)
 	}
 }
 
